@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rate My Idea</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #EEEBE1;
+    --bg-raised: #F6F4EC;
+    --ink: #182420;
+    --ink-soft: #4B564F;
+    --line: #C9C3B0;
+    --line-soft: #DAD5C4;
+    --gold: #B4802B;
+    --gold-deep: #8C631F;
+    --green: #33604A;
+    --green-soft: #DDE6DA;
+    --amber-soft: #F0E1C4;
+    --amber-ink: #8A5C10;
+    --red: #8C3B2E;
+    --red-soft: #EAD9D3;
+    --serif: 'Zilla Slab', Georgia, serif;
+    --sans: 'Inter', -apple-system, sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+  }
+
+  *{box-sizing:border-box; margin:0; padding:0;}
+
+  html,body{
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body{ min-height: 100vh; }
+
+  .page{
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 28px 24px 60px 64px;
+    position: relative;
+  }
+
+  .page::before{
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 32px;
+    width: 1px;
+    background: var(--line);
+  }
+
+  /* ---------- Header ---------- */
+  header{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    padding-bottom: 20px;
+    margin-bottom: 34px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .brand{
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 19px;
+    letter-spacing: 0.2px;
+  }
+  .brand span{ color: var(--gold-deep); }
+
+  .header-right{
+    display:flex;
+    align-items:center;
+    gap: 14px;
+    flex-wrap: wrap;
+    justify-content:flex-end;
+  }
+
+  .account-btn{
+    background:none;
+    border: 1px solid var(--line);
+    color: var(--ink-soft);
+    padding: 6px 13px;
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 600;
+    cursor:pointer;
+    border-radius: 999px;
+  }
+  .account-btn:hover{ border-color: var(--ink); color: var(--ink); }
+
+  .account-area{ display:flex; align-items:center; gap: 8px; }
+  .account-user-pill{
+    display:flex;
+    align-items:center;
+    gap: 8px;
+    font-size: 12px;
+  }
+  .account-user-pill .name{ font-weight: 600; }
+  .account-user-pill button{
+    background:none;
+    border: 1px solid var(--line);
+    color: var(--ink-soft);
+    padding: 5px 11px;
+    font-family: var(--sans);
+    font-size: 11px;
+    font-weight: 600;
+    cursor:pointer;
+    border-radius: 999px;
+  }
+  .account-user-pill button:hover{ border-color: var(--ink); color: var(--ink); }
+
+  .challenge-banner{
+    background: var(--amber-soft);
+    color: var(--amber-ink);
+    border-left: 3px solid var(--gold-deep);
+    padding: 14px 16px;
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 26px;
+  }
+
+  .auth-tabs{ display:flex; gap: 0; margin-bottom: 20px; border-bottom: 1px solid var(--line); }
+  .auth-tab{
+    background:none; border:none; cursor:pointer;
+    padding: 8px 4px 10px;
+    margin-right: 22px;
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink-soft);
+    border-bottom: 2px solid transparent;
+  }
+  .auth-tab.active{ color: var(--ink); border-bottom-color: var(--gold-deep); }
+  .auth-panel{ display:none; }
+  .auth-panel.active{ display:block; }
+  .auth-error{
+    font-size: 12px;
+    color: var(--red);
+    margin-top: 4px;
+    min-height: 14px;
+  }
+  .auth-hint{
+    font-size: 11px;
+    color: #8A8474;
+    margin-top: 16px;
+    line-height: 1.6;
+  }
+
+  .history-empty{ font-size: 14px; color: var(--ink-soft); padding: 10px 0; }
+  .history-item{
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line);
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap: 14px;
+  }
+  .history-item:last-child{ border-bottom: none; }
+  .history-idea{ font-size: 13px; line-height: 1.5; max-width: 42ch; }
+  .history-meta{ font-size: 11px; color: #8A8474; margin-top: 4px; }
+  .history-score{
+    font-family: var(--mono);
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--gold-deep);
+    flex-shrink:0;
+    white-space: nowrap;
+  }
+
+  .lang-toggle{
+    display:flex;
+    border: 1px solid var(--ink);
+    border-radius: 999px;
+    overflow:hidden;
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .lang-toggle button{
+    padding: 6px 13px;
+    background: transparent;
+    border:none;
+    cursor:pointer;
+    color: var(--ink-soft);
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    transition: background .15s ease, color .15s ease;
+  }
+  .lang-toggle button.active{
+    background: var(--ink);
+    color: var(--bg-raised);
+  }
+
+  /* ---------- Hero / form ---------- */
+  .hero-title{
+    font-family: var(--serif);
+    font-weight: 700;
+    font-size: clamp(34px, 6vw, 50px);
+    line-height: 1.04;
+    letter-spacing: -0.01em;
+    max-width: 12ch;
+  }
+
+  .hero-sub{
+    font-size: 15px;
+    color: var(--ink-soft);
+    max-width: 46ch;
+    line-height: 1.55;
+    margin-top: 14px;
+  }
+
+  .intake{
+    margin-top: 32px;
+    background: var(--bg-raised);
+    border: 1px solid var(--line);
+    padding: 22px;
+  }
+
+  .intake-label{
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink-soft);
+    margin-bottom: 10px;
+  }
+
+  textarea{
+    width: 100%;
+    min-height: 120px;
+    resize: vertical;
+    border: none;
+    background: transparent;
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.5;
+    color: var(--ink);
+    outline: none;
+  }
+  textarea::placeholder{ color: #9A9484; }
+
+  .intake-footer{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid var(--line-soft);
+  }
+
+  .char-hint{ font-size: 12px; color: #9A9484; }
+
+  .submit-btn{
+    background: var(--ink);
+    color: var(--bg-raised);
+    border: none;
+    padding: 11px 22px;
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background .15s ease, transform .1s ease;
+  }
+  .submit-btn:hover{ background: var(--green); }
+  .submit-btn:active{ transform: translateY(1px); }
+  .submit-btn:disabled{ background:#B4AF9E; cursor: not-allowed; }
+
+  .error-box{
+    margin-top: 16px;
+    padding: 12px 14px;
+    background: var(--red-soft);
+    color: var(--red);
+    font-size: 14px;
+    border-left: 3px solid var(--red);
+    display:none;
+  }
+  .error-box.show{ display:block; }
+
+  /* ---------- Loading ---------- */
+  .loading{
+    display:none;
+    margin-top: 40px;
+    align-items:center;
+    gap: 12px;
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+  .loading.show{ display:flex; }
+  .spinner{
+    width: 14px; height: 14px;
+    border: 2px solid var(--line);
+    border-top-color: var(--gold);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    flex-shrink:0;
+  }
+  @keyframes spin{ to{ transform: rotate(360deg); } }
+
+  /* ---------- Report ---------- */
+  .report{ margin-top: 48px; display:none; }
+  .report.show{ display:block; animation: rise .5s cubic-bezier(.2,.7,.2,1); }
+  @keyframes rise{
+    from{ opacity:0; transform: translateY(14px); }
+    to{ opacity:1; transform: translateY(0); }
+  }
+
+  .verdict{
+    display:flex;
+    align-items:center;
+    gap: 22px;
+    padding-bottom: 26px;
+    border-bottom: 2px solid var(--ink);
+    margin-bottom: 30px;
+  }
+
+  .score-stamp{
+    width: 84px; height: 84px;
+    border: 2.5px solid var(--gold-deep);
+    border-radius: 50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+    flex-shrink:0;
+    transform: rotate(-4deg);
+  }
+  .score-stamp .num{ font-family: var(--mono); font-weight: 700; font-size: 26px; color: var(--gold-deep); line-height:1; }
+  .score-stamp .of{ font-family: var(--mono); font-size: 9px; color: var(--gold-deep); margin-top: 2px; }
+
+  .verdict-text .eyebrow{ font-size: 12px; font-weight: 600; color: var(--ink-soft); margin-bottom: 5px; }
+  .verdict-text .line{ font-family: var(--serif); font-size: 19px; font-weight: 500; line-height: 1.35; }
+
+  .entry{
+    padding: 22px 0;
+    border-bottom: 1px solid var(--line);
+    display:grid;
+    grid-template-columns: 34px 1fr;
+    gap: 16px;
+  }
+  .entry:last-child{ border-bottom: none; }
+  .entry-index{ font-family: var(--mono); font-size: 12px; color: var(--gold-deep); padding-top: 3px; }
+  .entry-title{ font-family: var(--serif); font-size: 18px; font-weight: 600; margin-bottom: 6px; display:flex; align-items:center; gap: 10px; flex-wrap: wrap; }
+
+  .tag{ font-family: var(--sans); font-size: 11px; font-weight: 600; padding: 2px 9px; border-radius: 999px; }
+  .tag.low{ background: var(--green-soft); color: var(--green); }
+  .tag.mid{ background: var(--amber-soft); color: var(--amber-ink); }
+  .tag.high{ background: var(--red-soft); color: var(--red); }
+
+  .entry-text{ font-size: 15px; line-height: 1.62; color: var(--ink); max-width: 62ch; }
+
+  .report-footer{
+    margin-top: 36px;
+    display:flex;
+    justify-content: space-between;
+    align-items:center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .again-btn{
+    background: transparent;
+    border: 1px solid var(--ink);
+    color: var(--ink);
+    padding: 10px 18px;
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .again-btn:hover{ background: var(--ink); color: var(--bg-raised); }
+  .stamp-mark{ font-family: var(--mono); font-size: 11px; color: #9A9484; }
+
+  /* ---------- Build my idea ---------- */
+  .build-section{
+    margin-top: 44px;
+    padding-top: 30px;
+    border-top: 2px solid var(--ink);
+  }
+  .build-eyebrow{ font-size: 12px; font-weight: 600; color: var(--ink-soft); margin-bottom: 8px; }
+  .build-title{ font-family: var(--serif); font-size: 24px; font-weight: 700; margin-bottom: 10px; }
+  .build-desc{ font-size: 14px; color: var(--ink-soft); line-height: 1.6; max-width: 54ch; margin-bottom: 14px; }
+  .build-list{ font-size: 13px; color: var(--ink-soft); line-height: 1.8; margin-bottom: 20px; padding-left: 18px; }
+  .build-price-row{ display:flex; align-items:center; gap: 18px; flex-wrap: wrap; }
+  .build-price{ font-family: var(--mono); font-size: 24px; font-weight: 700; color: var(--gold-deep); }
+  .build-btn{
+    background: var(--gold-deep);
+    color: var(--bg-raised);
+    border: none;
+    padding: 12px 22px;
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background .15s ease;
+  }
+  .build-btn:hover{ background: var(--ink); }
+
+  /* ---------- Modals ---------- */
+  .modal-overlay{
+    position: fixed; inset: 0;
+    background: rgba(24,36,32,0.55);
+    display:none;
+    align-items:flex-start;
+    justify-content:center;
+    padding: 40px 20px;
+    overflow-y: auto;
+    z-index: 100;
+  }
+  .modal-overlay.show{ display:flex; }
+  .modal-panel{
+    background: var(--bg-raised);
+    max-width: 640px;
+    width: 100%;
+    border: 1px solid var(--line);
+    padding: 32px;
+    position: relative;
+    margin-bottom: 40px;
+  }
+  .modal-panel.wide{ max-width: 720px; }
+  .modal-close{
+    position:absolute; top: 16px; right: 16px;
+    background:none; border:none;
+    font-size: 22px;
+    line-height:1;
+    cursor:pointer;
+    color: var(--ink-soft);
+    width: 30px; height: 30px;
+  }
+  .modal-close:hover{ color: var(--ink); }
+  .modal-title{ font-family: var(--serif); font-size: 23px; font-weight: 700; margin-bottom: 6px; padding-right: 34px; }
+  .modal-note{ font-size: 12px; color: var(--ink-soft); margin-bottom: 20px; font-style: italic; }
+  .modal-body{ font-size: 14px; line-height: 1.65; color: var(--ink); }
+  .modal-body h3{ font-family: var(--serif); font-size: 15px; margin-top: 20px; margin-bottom: 6px; }
+  .modal-body h3:first-child{ margin-top: 0; }
+  .modal-body p{ margin-bottom: 10px; }
+  .modal-body ul{ margin: 6px 0 10px 18px; }
+  .modal-body li{ margin-bottom: 4px; }
+
+  /* ---------- Checkout ---------- */
+  .checkout-summary{
+    background: var(--amber-soft);
+    color: var(--amber-ink);
+    padding: 14px;
+    margin-bottom: 18px;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  .checkout-field{ margin-bottom: 14px; }
+  .checkout-field label{ display:block; font-size: 12px; font-weight: 600; margin-bottom: 5px; color: var(--ink-soft); }
+  .checkout-field input{
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    background: var(--bg);
+    font-family: inherit;
+    font-size: 14px;
+    color: var(--ink);
+    outline: none;
+  }
+  .checkout-field input:focus{ border-color: var(--gold-deep); }
+  .checkout-note{ font-size: 11px; color: #8A8474; margin-top: 16px; line-height: 1.6; }
+
+  /* ---------- Business plan result ---------- */
+  .bp-title{ font-family: var(--serif); font-size: 22px; font-weight: 700; margin-bottom: 20px; }
+  .bp-section{ margin-bottom: 18px; }
+  .bp-section h4{ font-family: var(--serif); font-size: 15px; margin-bottom: 4px; color: var(--gold-deep); }
+  .bp-section p{ font-size: 14px; line-height: 1.6; }
+  .bp-actions{ display:flex; gap: 10px; margin-top: 22px; flex-wrap: wrap; }
+  .bp-actions button{
+    padding: 10px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .bp-download{ background: var(--ink); color: var(--bg-raised); border: none; }
+  .bp-download:hover{ background: var(--green); }
+  .bp-close-btn{ background: transparent; color: var(--ink); border: 1px solid var(--ink); }
+  .bp-loading{ display:flex; align-items:center; gap: 10px; font-family: var(--mono); font-size: 13px; color: var(--ink-soft); padding: 20px 0; }
+
+  /* ---------- Legal nav & footer ---------- */
+  footer.page-footer{
+    margin-top: 70px;
+    padding-top: 18px;
+    border-top: 1px solid var(--line);
+    font-size: 12px;
+    color: #9A9484;
+    line-height: 1.6;
+  }
+  .legal-nav{
+    margin-top: 12px;
+    display:flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    font-size: 12px;
+  }
+  .legal-nav button{
+    background:none;
+    border:none;
+    padding:0;
+    color: var(--ink-soft);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor:pointer;
+    font-family: inherit;
+    font-size: inherit;
+  }
+  .legal-nav button:hover{ color: var(--ink); }
+
+  /* ---------- Cookie banner ---------- */
+  .cookie-banner{
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: var(--ink);
+    color: var(--bg-raised);
+    padding: 16px 20px;
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    z-index: 90;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  .cookie-banner.show{ display:flex; }
+  .cookie-banner-text{ max-width: 56ch; }
+  .cookie-banner-text button{
+    background:none; border:none; padding:0;
+    color: var(--amber-soft);
+    text-decoration: underline;
+    cursor:pointer;
+    font: inherit;
+  }
+  .cookie-actions{ display:flex; gap: 10px; flex-shrink:0; }
+  .cookie-btn{
+    padding: 9px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    border: 1px solid var(--bg-raised);
+    background: transparent;
+    color: var(--bg-raised);
+    cursor:pointer;
+    font-family: inherit;
+  }
+  .cookie-btn.primary{ background: var(--gold); border-color: var(--gold); color: var(--ink); }
+
+  @media (max-width: 480px){
+    .page{ padding-left: 30px; }
+    .page::before{ left: 14px; }
+    .entry{ grid-template-columns: 22px 1fr; gap: 10px; }
+    .verdict{ align-items:flex-start; }
+    .cookie-banner{ flex-direction:column; align-items:flex-start; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <div class="brand">Rate My <span>Idea</span></div>
+    <div class="header-right">
+      <div class="lang-toggle">
+        <button id="btn-de" class="active">DE</button>
+        <button id="btn-en">EN</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="challenge-banner" id="challenge-banner" style="display:none;"></div>
+
+  <h1 class="hero-title" id="t-hero-title">Deine Idee. Ehrlich geprüft.</h1>
+  <p class="hero-sub" id="t-hero-sub">Beschreibe deine Geschäftsidee in ein paar Sätzen. Du bekommst eine strukturierte Einschätzung in neun Punkten – von Problem bis Marketing.</p>
+
+  <div class="intake">
+    <div class="intake-label" id="t-intake-label">DEINE IDEE</div>
+    <textarea id="idea-input" placeholder="z. B. Eine App, die Nachbarn hilft, überschüssiges Gemüse aus dem eigenen Garten zu tauschen …"></textarea>
+    <div class="intake-footer">
+      <span class="char-hint" id="char-hint">0 / 1200</span>
+      <button class="submit-btn" id="submit-btn">Idee bewerten</button>
+    </div>
+  </div>
+
+  <div class="error-box" id="error-box"></div>
+
+  <div class="loading" id="loading">
+    <div class="spinner"></div>
+    <span id="loading-text">Analysiere …</span>
+  </div>
+
+  <div class="report" id="report">
+    <div class="verdict">
+      <div class="score-stamp">
+        <div class="num" id="score-num">–</div>
+        <div class="of">/ 10</div>
+      </div>
+      <div class="verdict-text">
+        <div class="eyebrow" id="t-verdict-eyebrow">GESAMTEINSCHÄTZUNG</div>
+        <div class="line" id="verdict-line"></div>
+      </div>
+    </div>
+
+    <div id="entries"></div>
+
+    <div class="report-footer">
+      <button class="again-btn" id="again-btn">Neue Idee prüfen</button>
+      <span class="stamp-mark" id="stamp-mark"></span>
+    </div>
+
+    <div class="build-section" id="share-section">
+      <div class="build-eyebrow" id="t-share-eyebrow">TEILEN</div>
+      <div class="build-title" id="t-share-title">Fordere deine Freunde heraus</div>
+      <p class="build-desc" id="share-desc"></p>
+      <button class="again-btn" id="share-btn">Link kopieren</button>
+    </div>
+  </div>
+
+  <footer class="page-footer">
+    <span id="t-footer">Rate My Idea liefert eine automatisierte Ersteinschätzung, keine rechtliche oder finanzielle Beratung.</span>
+    <div class="legal-nav">
+      <button id="nav-impressum">Impressum</button>
+      <button id="nav-datenschutz">Datenschutzerklärung</button>
+    </div>
+  </footer>
+
+</div>
+
+<!-- Legal modals -->
+<div class="modal-overlay" id="modal-impressum">
+  <div class="modal-panel">
+    <button class="modal-close" data-close="modal-impressum">&times;</button>
+    <div class="modal-title" id="mt-impressum">Impressum</div>
+    <div class="modal-note" id="mn-impressum"></div>
+    <div class="modal-body" id="mb-impressum"></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-datenschutz">
+  <div class="modal-panel">
+    <button class="modal-close" data-close="modal-datenschutz">&times;</button>
+    <div class="modal-title" id="mt-datenschutz">Datenschutzerklärung</div>
+    <div class="modal-note" id="mn-datenschutz"></div>
+    <div class="modal-body" id="mb-datenschutz"></div>
+  </div>
+</div>
+
+<script>
+// API endpoint for AI calls. Inside the Claude.ai artifact preview this is
+// handled automatically. For a standalone deployment, point this at your own
+// backend proxy that holds your real Anthropic API key server-side
+// (see the accompanying server example) — never put a real API key in this file.
+const API_ENDPOINT = "http://localhost:3000/api/claude";
+
+const I18N = {
+  de: {
+    heroTitle: "Deine Idee. Ehrlich bewertet.",
+    heroSub: "Beschreibe deine Geschäftsidee in ein paar Sätzen. Du bekommst eine strukturierte Einschätzung in neun Punkten – von Problem bis Marketing.",
+    intakeLabel: "DEINE IDEE",
+    placeholder: "z. B. Eine App, die Nachbarn hilft, überschüssiges Gemüse aus dem eigenen Garten zu tauschen …",
+    submit: "Idee bewerten",
+    submitting: "Wird analysiert …",
+    loading: ["Analysiere Problem und Zielgruppe …", "Prüfe Konkurrenz und Marktgröße …", "Schreibe den Bericht …"],
+    verdictEyebrow: "GESAMTEINSCHÄTZUNG",
+    again: "Neue Idee prüfen",
+    footer: "Rate My Idea liefert eine automatisierte Ersteinschätzung, keine rechtliche oder finanzielle Beratung.",
+    errorEmpty: "Bitte beschreibe zuerst deine Idee.",
+    errorApi: "Die Analyse ist fehlgeschlagen. Bitte versuch es noch einmal.",
+    stamp: "GEPRÜFT · ",
+    tagLow: "Niedrig", tagMid: "Mittel", tagHigh: "Hoch",
+    sections: [
+      {key:"problem", title:"Problem"},
+      {key:"targetAudience", title:"Zielgruppe"},
+      {key:"competition", title:"Konkurrenz"},
+      {key:"monetization", title:"Monetarisierung"},
+      {key:"difficulty", title:"Schwierigkeit"},
+      {key:"legalRisks", title:"Rechtliche Risiken"},
+      {key:"marketSize", title:"Geschätzte Marktgröße"},
+      {key:"mvp", title:"MVP"},
+      {key:"marketing", title:"Marketingideen"}
+    ],
+    share: {
+      eyebrow: "TEILEN",
+      title: "Fordere deine Freunde heraus",
+      desc: (score) => `Deine Idee hat ${score} von 10 Punkten erzielt. Schick den Link an Freunde – schaffen sie mehr Punkte?`,
+      button: "Link kopieren",
+      copied: "Link kopiert!",
+      challengeBanner: (score) => `🏆 Jemand hat eine Idee mit ${score}/10 Punkten eingereicht. Kannst du es besser? Reiche deine eigene Idee ein und knack den Score.`
+    },
+    legal: {
+      impressum: {
+        navLabel: "Impressum",
+        title: "Impressum",
+        note: "Angaben gemäß § 5 DDG.",
+        body: `
+          <h3>Angaben gemäß § 5 DDG</h3>
+          <p>Emil Prammer<br>Lampigasse 27/10<br>1020 Wien<br>Österreich</p>
+          <h3>Kontakt</h3>
+          <p>Telefon: +43 677 62842933<br>E-Mail: jordan.hanssen11@gmail.com</p>
+          <h3>Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV</h3>
+          <p>Emil Prammer, Lampigasse 27/10, 1020 Wien, Österreich</p>
+          <h3>EU-Streitschlichtung</h3>
+          <p>Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit: ec.europa.eu/consumers/odr. Unsere E-Mail-Adresse findest du oben im Impressum.</p>
+          <h3>Haftung für Inhalte</h3>
+          <p>Die Inhalte dieser Seite, insbesondere die automatisiert erstellten Bewertungen, wurden mit Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte kann jedoch keine Gewähr übernommen werden. Es handelt sich um ein unentgeltliches, automatisiert generiertes Angebot ohne Anspruch auf inhaltliche Richtigkeit.</p>
+        `
+      },
+      datenschutz: {
+        navLabel: "Datenschutzerklärung",
+        title: "Datenschutzerklärung",
+        note: "Datenschutzerklärung gemäß Art. 13 DSGVO.",
+        body: `
+          <h3>1. Verantwortlicher</h3>
+          <p>Emil Prammer, Lampigasse 27/10, 1020 Wien, Österreich, jordan.hanssen11@gmail.com – siehe Impressum.</p>
+          <h3>2. Verarbeitung deiner eingegebenen Idee</h3>
+          <p>Der von dir eingegebene Text wird zur Analyse an die Server unseres KI-Anbieters (Anthropic) übermittelt und dort verarbeitet, um die Bewertung zu erstellen. Die Eingaben werden nicht dauerhaft auf unseren eigenen Servern gespeichert.</p>
+          <h3>3. Server-Logfiles</h3>
+          <p>Beim Aufruf dieser Website erhebt der Hosting-Anbieter automatisch technische Zugriffsdaten (z. B. IP-Adresse, Datum, Uhrzeit, aufgerufene Seite), um den Betrieb sicherzustellen. Diese Daten werden nach [Zeitraum einfügen] gelöscht.</p>
+          <h3>4. Google Fonts</h3>
+          <p>Diese Seite lädt Schriftarten von Google Fonts über einen externen Server. Dabei kann deine IP-Adresse an Google (Google Ireland Limited) übertragen werden. Weitere Informationen: policies.google.com/privacy.</p>
+          <h3>5. Cookies</h3>
+          <p>Diese Website setzt selbst keine Tracking-, Analyse- oder sonstigen Cookies.</p>
+          <h3>6. Deine Rechte</h3>
+          <p>Du hast das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung, Datenübertragbarkeit sowie Widerspruch. Wende dich dazu an die oben genannte Kontaktadresse. Außerdem besteht ein Beschwerderecht bei der zuständigen Datenschutzaufsichtsbehörde.</p>
+          <h3>7. Kontakt</h3>
+          <p>Bei Fragen zum Datenschutz wende dich an: jordan.hanssen11@gmail.com.</p>
+        `
+      }
+    }
+  },
+  en: {
+    heroTitle: "Your idea. Honestly rated.",
+    heroSub: "Describe your business idea in a few sentences. You'll get a structured assessment across nine points — from problem to marketing.",
+    intakeLabel: "YOUR IDEA",
+    placeholder: "e.g. An app that helps neighbours swap surplus vegetables from their own gardens …",
+    submit: "Rate my idea",
+    submitting: "Analysing …",
+    loading: ["Analysing the problem and audience …", "Checking competition and market size …", "Writing the report …"],
+    verdictEyebrow: "OVERALL VERDICT",
+    again: "Check another idea",
+    footer: "Rate My Idea gives an automated first read, not legal or financial advice.",
+    errorEmpty: "Please describe your idea first.",
+    errorApi: "The analysis failed. Please try again.",
+    stamp: "REVIEWED · ",
+    tagLow: "Low", tagMid: "Medium", tagHigh: "High",
+    sections: [
+      {key:"problem", title:"Problem"},
+      {key:"targetAudience", title:"Target audience"},
+      {key:"competition", title:"Competition"},
+      {key:"monetization", title:"Monetization"},
+      {key:"difficulty", title:"Difficulty"},
+      {key:"legalRisks", title:"Legal risks"},
+      {key:"marketSize", title:"Estimated market size"},
+      {key:"mvp", title:"MVP"},
+      {key:"marketing", title:"Marketing ideas"}
+    ],
+    share: {
+      eyebrow: "SHARE",
+      title: "Challenge your friends",
+      desc: (score) => `Your idea scored ${score} out of 10. Send the link to friends — can they beat it?`,
+      button: "Copy link",
+      copied: "Link copied!",
+      challengeBanner: (score) => `🏆 Someone submitted an idea that scored ${score}/10. Think you can do better? Submit your own idea and beat the score.`
+    },
+    legal: {
+      impressum: {
+        navLabel: "Legal notice",
+        title: "Legal notice (Impressum)",
+        note: "Information pursuant to § 5 DDG (German Digital Services Act).",
+        body: `
+          <h3>Information pursuant to § 5 DDG</h3>
+          <p>Emil Prammer<br>Lampigasse 27/10<br>1020 Vienna<br>Austria</p>
+          <h3>Contact</h3>
+          <p>Phone: +43 677 62842933<br>Email: jordan.hanssen11@gmail.com</p>
+          <h3>Responsible for content under § 18 (2) MStV</h3>
+          <p>Emil Prammer, Lampigasse 27/10, 1020 Vienna, Austria</p>
+          <h3>EU dispute resolution</h3>
+          <p>The European Commission provides a platform for online dispute resolution (ODR): ec.europa.eu/consumers/odr. Our email address is listed above.</p>
+          <h3>Liability for content</h3>
+          <p>The content of this site, in particular the automatically generated assessments, has been created with care. However, no guarantee is given for the accuracy, completeness or timeliness of the content. This is a free, automatically generated offering with no claim to factual accuracy.</p>
+        `
+      },
+      datenschutz: {
+        navLabel: "Privacy policy",
+        title: "Privacy policy",
+        note: "Privacy policy pursuant to Art. 13 GDPR.",
+        body: `
+          <h3>1. Controller</h3>
+          <p>Emil Prammer, Lampigasse 27/10, 1020 Vienna, Austria, jordan.hanssen11@gmail.com – see legal notice.</p>
+          <h3>2. Processing of the idea you submit</h3>
+          <p>The text you enter is sent to the servers of our AI provider (Anthropic) for analysis and processed there to generate the assessment. Submissions are not stored permanently on our own servers.</p>
+          <h3>3. Server log files</h3>
+          <p>When you access this site, the hosting provider automatically collects technical access data (e.g. IP address, date, time, page requested) to ensure operation. This data is deleted after [insert retention period].</p>
+          <h3>4. Google Fonts</h3>
+          <p>This site loads fonts from Google Fonts via an external server. Your IP address may be transmitted to Google (Google Ireland Limited) in the process. More information: policies.google.com/privacy.</p>
+          <h3>5. Cookies</h3>
+          <p>This site does not set any tracking, analytics or other cookies itself.</p>
+          <h3>6. Your rights</h3>
+          <p>You have the right to access, rectification, erasure, restriction of processing, data portability and objection. Contact the address above to exercise these rights. You also have the right to lodge a complaint with the competent data protection supervisory authority.</p>
+          <h3>7. Contact</h3>
+          <p>For privacy questions, contact: jordan.hanssen11@gmail.com.</p>
+        `
+      }
+    }
+  }
+};
+
+let lang = "de";
+let lastIdea = "";
+let lastResult = null;
+
+const $ = (id) => document.getElementById(id);
+
+function applyStaticText(){
+  const t = I18N[lang];
+  document.documentElement.lang = lang;
+  $("t-hero-title").textContent = t.heroTitle;
+  $("t-hero-sub").textContent = t.heroSub;
+  $("t-intake-label").textContent = t.intakeLabel;
+  $("idea-input").placeholder = t.placeholder;
+  $("submit-btn").textContent = lastIdea && $("loading").classList.contains("show") ? t.submitting : t.submit;
+  $("t-verdict-eyebrow").textContent = t.verdictEyebrow;
+  $("again-btn").textContent = t.again;
+  $("char-hint").textContent = `${$("idea-input").value.length} / 1200`;
+  $("btn-de").classList.toggle("active", lang === "de");
+  $("btn-en").classList.toggle("active", lang === "en");
+
+  // footer
+  const footerSpan = document.querySelector('footer.page-footer span');
+  if(footerSpan) footerSpan.textContent = t.footer;
+  $("nav-impressum").textContent = t.legal.impressum.navLabel;
+  $("nav-datenschutz").textContent = t.legal.datenschutz.navLabel;
+
+  // legal modals
+  Object.keys(t.legal).forEach(key => {
+    const l = t.legal[key];
+    $(`mt-${key}`).textContent = l.title;
+    $(`mn-${key}`).textContent = l.note;
+    $(`mb-${key}`).innerHTML = l.body;
+  });
+
+  // share section
+  $("t-share-eyebrow").textContent = t.share.eyebrow;
+  $("t-share-title").textContent = t.share.title;
+  $("share-btn").textContent = t.share.button;
+  if(lastResult) $("share-desc").textContent = t.share.desc(lastResult.overallScore);
+
+  // challenge banner from URL
+  renderChallengeBanner();
+
+  if(lastResult){ renderReport(lastResult); }
+}
+
+$("btn-de").addEventListener("click", () => { if(lang!=="de"){ lang="de"; applyStaticText(); if(lastIdea) runAnalysis(lastIdea); } });
+$("btn-en").addEventListener("click", () => { if(lang!=="en"){ lang="en"; applyStaticText(); if(lastIdea) runAnalysis(lastIdea); } });
+
+$("idea-input").addEventListener("input", (e) => {
+  $("char-hint").textContent = `${e.target.value.length} / 1200`;
+});
+
+$("submit-btn").addEventListener("click", () => {
+  const idea = $("idea-input").value.trim();
+  const t = I18N[lang];
+  if(!idea){ showError(t.errorEmpty); return; }
+  hideError();
+  lastIdea = idea;
+  runAnalysis(idea);
+});
+
+$("again-btn").addEventListener("click", () => {
+  $("report").classList.remove("show");
+  $("idea-input").value = "";
+  $("char-hint").textContent = "0 / 1200";
+  lastResult = null;
+  lastIdea = "";
+  window.scrollTo({top:0, behavior:"smooth"});
+});
+
+function showError(msg){
+  const box = $("error-box");
+  box.textContent = msg;
+  box.classList.add("show");
+}
+function hideError(){ $("error-box").classList.remove("show"); }
+
+function setLoading(on){
+  const t = I18N[lang];
+  $("loading").classList.toggle("show", on);
+  $("submit-btn").disabled = on;
+  $("submit-btn").textContent = on ? t.submitting : t.submit;
+  if(on){
+    let i = 0;
+    $("loading-text").textContent = t.loading[0];
+    clearInterval(window.__loadingTimer);
+    window.__loadingTimer = setInterval(() => {
+      i = (i + 1) % t.loading.length;
+      $("loading-text").textContent = t.loading[i];
+    }, 1600);
+  } else {
+    clearInterval(window.__loadingTimer);
+  }
+}
+
+async function runAnalysis(idea){
+  hideError();
+  setLoading(true);
+  $("report").classList.remove("show");
+
+  const languageName = lang === "de" ? "German" : "English";
+  const systemPrompt = `You are a sharp, honest startup analyst. You evaluate a business or project idea across nine dimensions and respond ONLY with a single valid JSON object — no markdown fences, no preamble, no commentary outside the JSON.
+
+Respond entirely in ${languageName}, including all text values.
+
+JSON shape (all string fields are plain prose, 2-4 sentences, concrete and specific to the idea, no generic filler):
+{
+  "overallScore": <integer 1-10, how promising the idea is overall>,
+  "verdictLine": "<one crisp sentence summarizing the overall verdict>",
+  "problem": "<what problem does this solve, and how real/urgent is it>",
+  "targetAudience": "<who exactly would use this, how large and specific is that group>",
+  "competition": "<existing alternatives/competitors and how this idea differs>",
+  "monetization": "<realistic ways this could make money>",
+  "difficulty": {"level": "low|medium|high", "text": "<why building and running this is that hard>"},
+  "legalRisks": {"level": "low|medium|high", "text": "<relevant legal, regulatory or compliance risks>"},
+  "marketSize": "<a grounded estimate or reasoning about market size, with rough figures if reasonable>",
+  "mvp": "<what a lean first version could look like, kept small>",
+  "marketing": "<2-3 concrete, low-budget ways to get first users>"
+}
+
+Be honest and specific, not generic or flattering. Ground every point in the actual idea described by the user.`;
+
+  try{
+    const response = await fetch(API_ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-6",
+        max_tokens: 1400,
+        system: systemPrompt,
+        messages: [ { role: "user", content: `Idea:\n${idea}` } ]
+      })
+    });
+
+    if(!response.ok){ throw new Error("API request failed"); }
+    const data = await response.json();
+    const textBlock = (data.content || []).find(b => b.type === "text");
+    if(!textBlock){ throw new Error("No text in response"); }
+
+    const cleaned = textBlock.text.replace(/```json|```/g, "").trim();
+    const result = JSON.parse(cleaned);
+
+    lastResult = result;
+    renderReport(result);
+    setLoading(false);
+    $("report").classList.add("show");
+    setTimeout(() => { $("report").scrollIntoView({behavior:"smooth", block:"start"}); }, 80);
+
+  }catch(err){
+    console.error("Rate My Idea error:", err);
+    setLoading(false);
+    showError(I18N[lang].errorApi);
+  }
+}
+
+function levelTag(level, t){
+  const l = (level || "medium").toLowerCase();
+  if(l.startsWith("low") || l.startsWith("niedrig")) return {cls:"low", label:t.tagLow};
+  if(l.startsWith("high") || l.startsWith("hoch")) return {cls:"high", label:t.tagHigh};
+  return {cls:"mid", label:t.tagMid};
+}
+
+function renderReport(result){
+  const t = I18N[lang];
+  $("score-num").textContent = (result.overallScore ?? "–");
+  $("verdict-line").textContent = result.verdictLine || "";
+
+  const entriesEl = $("entries");
+  entriesEl.innerHTML = "";
+
+  t.sections.forEach((section, idx) => {
+    const raw = result[section.key];
+    const isRated = section.key === "difficulty" || section.key === "legalRisks";
+    const text = isRated ? (raw?.text || "") : (raw || "");
+    const idxStr = String(idx + 1).padStart(2, "0");
+
+    const entry = document.createElement("div");
+    entry.className = "entry";
+
+    let tagHtml = "";
+    if(isRated){
+      const tag = levelTag(raw?.level, t);
+      tagHtml = `<span class="tag ${tag.cls}">${tag.label}</span>`;
+    }
+
+    entry.innerHTML = `
+      <div class="entry-index">${idxStr}</div>
+      <div>
+        <div class="entry-title">${section.title}${tagHtml}</div>
+        <div class="entry-text">${escapeHtml(text)}</div>
+      </div>
+    `;
+    entriesEl.appendChild(entry);
+  });
+
+  const now = new Date();
+  $("stamp-mark").textContent = t.stamp + now.toLocaleDateString(lang === "de" ? "de-DE" : "en-US");
+  $("share-desc").textContent = t.share.desc(result.overallScore);
+}
+
+function escapeHtml(str){
+  const div = document.createElement("div");
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+/* ---------- Modal helpers ---------- */
+function openModal(id){ $(id).classList.add("show"); }
+function closeModal(id){ $(id).classList.remove("show"); }
+
+document.querySelectorAll(".modal-close").forEach(btn => {
+  btn.addEventListener("click", () => closeModal(btn.dataset.close));
+});
+document.querySelectorAll(".modal-overlay").forEach(overlay => {
+  overlay.addEventListener("click", (e) => { if(e.target === overlay) closeModal(overlay.id); });
+});
+
+$("nav-impressum").addEventListener("click", () => openModal("modal-impressum"));
+$("nav-datenschutz").addEventListener("click", () => openModal("modal-datenschutz"));
+
+/* ---------- Share / challenge link ---------- */
+$("share-btn").addEventListener("click", async () => {
+  const t = I18N[lang];
+  if(!lastResult) return;
+  const url = new URL(window.location.href);
+  url.search = "";
+  url.searchParams.set("score", lastResult.overallScore);
+  const link = url.toString();
+
+  try{
+    await navigator.clipboard.writeText(link);
+  }catch(e){
+    // clipboard API unavailable; fall back silently, link is still shown via prompt
+    window.prompt(t.share.button, link);
+    return;
+  }
+  const btn = $("share-btn");
+  const original = btn.textContent;
+  btn.textContent = t.share.copied;
+  setTimeout(() => { btn.textContent = original; }, 1800);
+});
+
+function renderChallengeBanner(){
+  const t = I18N[lang];
+  const params = new URLSearchParams(window.location.search);
+  const score = params.get("score");
+  const banner = $("challenge-banner");
+  if(score && !isNaN(parseInt(score, 10))){
+    banner.textContent = t.share.challengeBanner(parseInt(score, 10));
+    banner.style.display = "block";
+  }else{
+    banner.style.display = "none";
+  }
+}
+
+applyStaticText();
+</script>
+</body>
+</html>
