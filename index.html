@@ -650,11 +650,12 @@
 </div>
 
 <script>
-// API endpoint for AI calls. Inside the Claude.ai artifact preview this is
-// handled automatically. For a standalone deployment, point this at your own
-// backend proxy that holds your real Anthropic API key server-side
-// (see the accompanying server example) — never put a real API key in this file.
-const API_ENDPOINT = "http://localhost:3000/api/claude";
+// API endpoint for AI calls: local proxy when testing from a local file or
+// localhost, the live Render proxy everywhere else (including once a custom
+// domain is added later, since it's not "localhost" either).
+const API_ENDPOINT = (location.protocol === "file:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")
+  ? "http://localhost:3000/api/claude"
+  : "https://ratemyidea-13.onrender.com/api/claude";
 
 const I18N = {
   de: {
