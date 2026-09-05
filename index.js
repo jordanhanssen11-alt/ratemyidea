@@ -24,11 +24,15 @@ const cors = require("cors");
 require("dotenv").config();
 
 const app = express();
-// ALLOWED_ORIGIN als Umgebungsvariable setzen (z. B. https://deine-domain.de),
-// sobald das Frontend eine feste Adresse hat. Ohne gesetzte Variable bleibt
-// der Proxy offen für alle Origins, damit lokales Testen weiterhin funktioniert.
-const allowedOrigin = process.env.ALLOWED_ORIGIN;
-app.use(cors(allowedOrigin ? { origin: allowedOrigin } : {}));
+// ALLOWED_ORIGINS als Umgebungsvariable setzen, sobald das Frontend eine feste
+// Adresse hat, z. B. "https://deine-domain.de,https://www.deine-domain.de"
+// (kommagetrennt, mehrere Domains möglich). Ohne gesetzte Variable bleibt der
+// Proxy offen für alle Origins, damit lokales Testen weiterhin funktioniert.
+const allowedOrigins = (process.env.ALLOWED_ORIGINS || "")
+  .split(",")
+  .map(o => o.trim())
+  .filter(Boolean);
+app.use(cors(allowedOrigins.length ? { origin: allowedOrigins } : {}));
 app.use(express.json({ limit: "2mb" }));
 
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
